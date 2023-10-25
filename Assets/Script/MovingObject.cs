@@ -11,6 +11,7 @@ public class MovingObject : MonoBehaviour
     public float speed;
     public float runSpeed;
     float applyRunSpeed;
+
     // 달리기 중일때 2타일씩 건너뛰는 것을 방지하기 위한 변수
     bool applyRunFlag = false;
 
@@ -20,10 +21,12 @@ public class MovingObject : MonoBehaviour
 
     // Coroutine의 반복 실행을 제어하기 위한 변수
     bool canMove = true;
+
+    Animator animator;
     // Start is called before the first frame update
     void Start()
     {
-
+        animator = GetComponent<Animator>();
     }
 
     // Update is called once per frame
@@ -45,47 +48,64 @@ public class MovingObject : MonoBehaviour
     // 캐릭터의 이동이 끝날때까지 대기하게 하기 위한 코루틴
     IEnumerator MoveCoroutine()
     {
-        // 왼쪽 쉬프트를 누르면 이동 속도 증가 및 플래그 설정
-        if (Input.GetKey(KeyCode.LeftShift))
+        // 처음 키를 눌러서 Coroutine에 진입을 했고, 키를 계속 누르고 있다면 While문 안의 내용을 계속 반복 실행 
+        while (Input.GetAxisRaw("Horizontal") != 0 || Input.GetAxisRaw("Vertical") != 0)
         {
-            applyRunSpeed = runSpeed;
-            applyRunFlag = true;
-        }
-        else
-        {
-            applyRunSpeed = 0;
-            applyRunFlag = false;
-        }
+            // 왼쪽 쉬프트를 누르면 이동 속도 증가 및 플래그 설정
+            if (Input.GetKey(KeyCode.LeftShift))
+            {
+                applyRunSpeed = runSpeed;
+                applyRunFlag = true;
+            }
+            else
+            {
+                applyRunSpeed = 0;
+                applyRunFlag = false;
+            }
 
 
-        // 방향키가 눌리는대로 vector에 받아오기
-        vector.Set(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"), transform.position.z);
+            // 방향키가 눌리는대로 vector에 받아오기
+            vector.Set(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"), transform.position.z);
 
-        // 48픽셀만큼 움직이지 않았을 경우 이동을 계속함
-        while (currentWalkCount < walkCount)
-        {
-            // 좌 or 우 방향키가 눌렸을 경우
+            // 좌우 또는 상하 방향키를 눌렀을 경우 y 또는 x 값이 동시에 설정되지 않게 하기 위해서 0으로 설정
             if (vector.x != 0)
-            {
-                transform.Translate(vector.x * (speed + applyRunSpeed), 0, 0);
-            }
-            // 상 or 하 방향키가 눌렸을 경우
-            else if (vector.y != 0)
-            {
-                transform.Translate(0, vector.y * (speed + applyRunSpeed), 0);
-            }
+                vector.y = 0;
+            if (vector.y != 0)
+                vector.x = 0;
 
-            // 달리는 중이라면 currentWalkCount 증가를 1번 추가 진행
-            if (applyRunFlag)
+            // Animator의 Parameter를 vector의 값(Input.GetAxisRaw)로 바꿔줌
+            animator.SetFloat("DirX", vector.x);
+            animator.SetFloat("DirY", vector.y);
+            animator.SetBool("Walking", true);
+
+            // 48픽셀만큼 움직이지 않았을 경우 이동을 계속함
+            while (currentWalkCount < walkCount)
             {
+                // 좌 or 우 방향키가 눌렸을 경우
+                if (vector.x != 0)
+                {
+                    transform.Translate(vector.x * (speed + applyRunSpeed), 0, 0);
+                }
+                // 상 or 하 방향키가 눌렸을 경우
+                else if (vector.y != 0)
+                {
+                    transform.Translate(0, vector.y * (speed + applyRunSpeed), 0);
+                }
+
+                // 달리는 중이라면 currentWalkCount 증가를 1번 추가 진행
+                if (applyRunFlag)
+                {
+                    currentWalkCount++;
+                }
                 currentWalkCount++;
+                // 캐릭터가 자연스럽게 움직이기 위해 while문 안에 WaitForSeconds를 배치
+                yield return new WaitForSeconds(0.01f);
             }
-            currentWalkCount++;
-            // 캐릭터가 자연스럽게 움직이기 위해 while문 안에 WaitForSeconds를 배치
-            yield return new WaitForSeconds(0.01f);
+            currentWalkCount = 0;
         }
-        currentWalkCount = 0;
-        canMove = true;
 
+        // canMove를 밑으로 빼는 이유는 키를 계속 누르고 있다면 canMove가 true가 되고, Update 함수에서 Coroutine를 계속 실행하기 때문에. Animator도 마찬가지.
+        canMove = true;
+        animator.SetBool("Walking", false);
     }
 }
