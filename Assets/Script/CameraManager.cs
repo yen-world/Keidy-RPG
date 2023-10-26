@@ -10,11 +10,20 @@ public class CameraManager : MonoBehaviour
     // 따라다닐 대상의 위치값(카메라가 이동해야 하는 값)
     Vector3 targetPosition;
 
+    // 싱글톤 디자인 패턴을 구현하기 위한 static instance
+    static public CameraManager instance;
 
-    // Start is called before the first frame update
     void Start()
     {
-        DontDestroyOnLoad(this.gameObject);
+        if (instance == null)
+        {
+            instance = this;
+            DontDestroyOnLoad(this.gameObject);
+        }
+        else
+        {
+            Destroy(this.gameObject);
+        }
     }
 
     // Update is called once per frame

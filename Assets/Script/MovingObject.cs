@@ -34,15 +34,28 @@ public class MovingObject : MonoBehaviour
     Vector2 start;
     Vector2 end;
 
-    // Start is called before the first frame update
+    // 이동하고자 하는 맵의 이름을 TransferMap에서 받아오기 위한 변수
+    public string currentMapName;
+
+    // 싱글톤 디자인 패턴을 구현하기 위한 static instance
+    static public MovingObject instance;
+
     void Start()
     {
-        DontDestroyOnLoad(this.gameObject);
-        animator = GetComponent<Animator>();
-        boxCollider = GetComponent<BoxCollider2D>();
+        if (instance == null)
+        {
+            instance = this;
+
+            DontDestroyOnLoad(this.gameObject);
+            animator = GetComponent<Animator>();
+            boxCollider = GetComponent<BoxCollider2D>();
+        }
+        else
+        {
+            Destroy(this.gameObject);
+        }
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (canMove)
@@ -52,10 +65,8 @@ public class MovingObject : MonoBehaviour
             {
                 canMove = false;
                 StartCoroutine(MoveCoroutine());
-
             }
         }
-
     }
 
     // 캐릭터의 이동이 끝날때까지 대기하게 하기 위한 코루틴
