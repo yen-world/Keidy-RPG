@@ -8,4 +8,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/start.unity
     guid: 2cda990e2423bbf4892e6590ba056729
+  - enabled: 1
+    path: Assets/Scenes/school front.unity
+    guid: a592e677c5e23004e8d7b24747e63c9f
   m_configObjects: {}
