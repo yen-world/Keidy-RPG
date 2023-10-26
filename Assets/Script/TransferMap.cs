@@ -1,28 +1,31 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class TransferMap : MonoBehaviour
 {
-    // 이동하고자 하는 씬의 이름
-    public string transferMapName;
+
+    public Transform target;
+
     MovingObject thePlayer;
+    CameraManager theCamera;
+
+    public BoxCollider2D targetBound;
 
     // Start is called before the first frame update
     void Start()
     {
+        theCamera = FindObjectOfType<CameraManager>();
         thePlayer = FindObjectOfType<MovingObject>();
-    }
 
+    }
     private void OnTriggerEnter2D(Collider2D other)
     {
-        // transferPoint에 collider가 감지된 객체의 이름이 Player라면
         if (other.gameObject.name == "Player")
         {
-            thePlayer.currentMapName = transferMapName;
-            // transferMapName의 씬으로 이동
-            SceneManager.LoadScene(transferMapName);
+            theCamera.SetBound(targetBound);
+            theCamera.transform.position = new Vector3(target.transform.position.x, target.transform.position.y, theCamera.transform.position.z);
+            thePlayer.transform.position = target.transform.position;
         }
     }
 }
