@@ -23,10 +23,22 @@ public class MovingObject : MonoBehaviour
     bool canMove = true;
 
     Animator animator;
+    BoxCollider2D boxCollider;
+
+    // 캐릭터가 통과 불가능한 영역을 구분하기 위한 레이어 마스크
+    public LayerMask layerMask;
+
+    // start는 현재 캐릭터의 위치, end는 캐릭터가 이동하고자 하는 위치
+    // Ray를 start에서 end로 쏴서 방해물이 있는지 없는지 확인하기 위한 변수들
+    RaycastHit2D hit;
+    Vector2 start;
+    Vector2 end;
+
     // Start is called before the first frame update
     void Start()
     {
         animator = GetComponent<Animator>();
+        boxCollider = GetComponent<BoxCollider2D>();
     }
 
     // Update is called once per frame
@@ -76,6 +88,20 @@ public class MovingObject : MonoBehaviour
             // Animator의 Parameter를 vector의 값(Input.GetAxisRaw)로 바꿔줌
             animator.SetFloat("DirX", vector.x);
             animator.SetFloat("DirY", vector.y);
+
+            // 캐릭터의 현재위치와 캐릭터가 나아갈 위치를 대입
+            start = transform.position;
+            end = start + new Vector2(vector.x * speed * walkCount, vector.y * speed * walkCount);
+
+            boxCollider.enabled = false;
+            hit = Physics2D.Linecast(start, end, layerMask);
+            boxCollider.enabled = true;
+
+            if (hit.transform != null)
+            {
+                break;
+            }
+
             animator.SetBool("Walking", true);
 
             // 48픽셀만큼 움직이지 않았을 경우 이동을 계속함
