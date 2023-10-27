@@ -7,7 +7,7 @@ public class TransferMap : MonoBehaviour
 
     public Transform target;
 
-    MovingObject thePlayer;
+    PlayerManager thePlayer;
     CameraManager theCamera;
 
     public BoxCollider2D targetBound;
@@ -16,7 +16,7 @@ public class TransferMap : MonoBehaviour
     void Start()
     {
         theCamera = FindObjectOfType<CameraManager>();
-        thePlayer = FindObjectOfType<MovingObject>();
+        thePlayer = FindObjectOfType<PlayerManager>();
 
     }
     private void OnTriggerEnter2D(Collider2D other)

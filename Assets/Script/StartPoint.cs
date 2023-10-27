@@ -8,12 +8,12 @@ public class StartPoint : MonoBehaviour
     public string startPoint;
 
     // Player와 Camera를 startPoint에 위치하게 하기 위해서 변수로 받아옴
-    MovingObject thePlayer;
+    PlayerManager thePlayer;
     CameraManager theCamera;
     // Start is called before the first frame update
     void Start()
     {
-        thePlayer = FindObjectOfType<MovingObject>();
+        thePlayer = FindObjectOfType<PlayerManager>();
         theCamera = FindObjectOfType<CameraManager>();
 
         // 이동하고자 하는 씬의 이름(transferMapName)과 startPoint가 같은 씬으로 이동
