@@ -40,6 +40,9 @@ public class MovingObject : MonoBehaviour
     // 싱글톤 디자인 패턴을 구현하기 위한 static instance
     static public MovingObject instance;
 
+    public AudioClip walkSound_1;
+    public AudioClip walkSound_2;
+    public AudioSource audioSource;
     void Start()
     {
         if (instance == null)
