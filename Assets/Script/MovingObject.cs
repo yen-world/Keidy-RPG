@@ -40,9 +40,13 @@ public class MovingObject : MonoBehaviour
     // 싱글톤 디자인 패턴을 구현하기 위한 static instance
     static public MovingObject instance;
 
-    public AudioClip walkSound_1;
-    public AudioClip walkSound_2;
-    public AudioSource audioSource;
+    // 플레이어가 걸을 때 실행할 sound clip 이름
+    public string walkSound_1;
+    public string walkSound_2;
+    public string walkSound_3;
+    public string walkSound_4;
+
+    AudioManager theAudio;
     void Start()
     {
         if (instance == null)
@@ -52,6 +56,8 @@ public class MovingObject : MonoBehaviour
             DontDestroyOnLoad(this.gameObject);
             animator = GetComponent<Animator>();
             boxCollider = GetComponent<BoxCollider2D>();
+            // AudioManager가 붙은 AudioObject 불러오기
+            theAudio = FindObjectOfType<AudioManager>();
         }
         else
         {
@@ -119,6 +125,25 @@ public class MovingObject : MonoBehaviour
 
             animator.SetBool("Walking", true);
 
+            // 걸을때마다 랜덤하게 walkSound1~4의 sound 출력
+            int temp = Random.Range(1, 4);
+            switch (temp)
+            {
+                case 1:
+                    theAudio.Play(walkSound_1);
+                    break;
+                case 2:
+                    theAudio.Play(walkSound_2);
+                    break;
+                case 3:
+                    theAudio.Play(walkSound_3);
+                    break;
+                case 4:
+                    theAudio.Play(walkSound_4);
+                    break;
+            }
+
+
             // 48픽셀만큼 움직이지 않았을 경우 이동을 계속함
             while (currentWalkCount < walkCount)
             {
@@ -141,6 +166,9 @@ public class MovingObject : MonoBehaviour
                 currentWalkCount++;
                 // 캐릭터가 자연스럽게 움직이기 위해 while문 안에 WaitForSeconds를 배치
                 yield return new WaitForSeconds(0.01f);
+
+                // 캐릭터가 걸을때마다 오디오가 재생되게 하는 코드
+
             }
             currentWalkCount = 0;
         }

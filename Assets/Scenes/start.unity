@@ -157,7 +157,7 @@ Transform:
   - {fileID: 1566085074}
   - {fileID: 1742768010}
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &257717047
 PrefabInstance:
@@ -412,7 +412,7 @@ Transform:
   - {fileID: 382594525}
   - {fileID: 1941497325}
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &519420028
 GameObject:
@@ -586,6 +586,67 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   transferMapName: school front
+--- !u!1 &1350591317
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1350591318}
+  - component: {fileID: 1350591319}
+  m_Layer: 0
+  m_Name: AudioManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1350591318
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1350591317}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 542.76154, y: 90.01323, z: -40.031925}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1350591319
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1350591317}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d3db360cfcbb6bb42a68536554418545, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sounds:
+  - name: footsteps 1
+    clip: {fileID: 8300000, guid: f4bc9f0dc3b5a8d44b8b26b7037f2df5, type: 3}
+    volume: 1
+    loop: 0
+  - name: footsteps 2
+    clip: {fileID: 8300000, guid: 3815ac593c7329942b9979f270f55470, type: 3}
+    volume: 1
+    loop: 0
+  - name: footsteps 3
+    clip: {fileID: 8300000, guid: 3066da6eaa58bcb48b416f1a6f9bab5c, type: 3}
+    volume: 1
+    loop: 0
+  - name: footsteps 4
+    clip: {fileID: 8300000, guid: 24d812f3be4133e4c9319fe6e8c0314b, type: 3}
+    volume: 1
+    loop: 0
 --- !u!1 &1566085071
 GameObject:
   m_ObjectHideFlags: 0
@@ -940,6 +1001,10 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   currentMapName: 
+  walkSound_1: footsteps 1
+  walkSound_2: footsteps 2
+  walkSound_3: footsteps 3
+  walkSound_4: footsteps 4
 --- !u!95 &2076654755
 Animator:
   serializedVersion: 4
