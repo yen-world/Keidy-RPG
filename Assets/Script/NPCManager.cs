@@ -25,6 +25,8 @@ public class NPCManager : MovingObject
     void Start()
     {
         queue = new Queue<string>();
+        StartCoroutine(MoveCoroutine());
+
     }
 
     public void SetMove()
@@ -45,24 +47,6 @@ public class NPCManager : MovingObject
         {
             for (int i = 0; i < npc.direction.Length; i++)
             {
-                // NPC의 이동 텀에 따라 대기 시간을 따로 줌
-                switch (npc.frequency)
-                {
-                    case 1:
-                        yield return new WaitForSeconds(4f);
-                        break;
-                    case 2:
-                        yield return new WaitForSeconds(3f);
-                        break;
-                    case 3:
-                        yield return new WaitForSeconds(2f);
-                        break;
-                    case 4:
-                        yield return new WaitForSeconds(1f);
-                        break;
-                    case 5:
-                        break;
-                }
                 // queue.Count가 2보다 작을때 여기서 무한히 대기, true가 되면 빠져나옴
                 yield return new WaitUntil(() => queue.Count < 2);
 

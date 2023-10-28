@@ -118,6 +118,8 @@ public class PlayerManager : MovingObject
                     break;
             }
 
+            // boxCollider를 미리 움직이고자 하는 방향으로 살짝 움직여줌
+            boxCollider.offset = new Vector2(vector.x * 0.7f * speed * walkCount, vector.y * 0.7f * speed * walkCount);
 
             // 48픽셀만큼 움직이지 않았을 경우 이동을 계속함
             while (currentWalkCount < walkCount)
@@ -138,6 +140,13 @@ public class PlayerManager : MovingObject
                 {
                     currentWalkCount++;
                 }
+
+                // 절반 이상 걸어왔을 때 boxCollider의 offset을 원위치 시켜줌
+                if (currentWalkCount == 12)
+                {
+                    boxCollider.offset = Vector2.zero;
+                }
+
                 currentWalkCount++;
                 // 캐릭터가 자연스럽게 움직이기 위해 while문 안에 WaitForSeconds를 배치
                 yield return new WaitForSeconds(0.01f);

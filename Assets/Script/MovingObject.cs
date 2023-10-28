@@ -41,6 +41,25 @@ public class MovingObject : MonoBehaviour
     {
         while (queue.Count != 0)
         {
+            // NPC의 이동 텀에 따라 대기 시간을 따로 줌
+            switch (_frequency)
+            {
+                case 1:
+                    yield return new WaitForSeconds(4f);
+                    break;
+                case 2:
+                    yield return new WaitForSeconds(3f);
+                    break;
+                case 3:
+                    yield return new WaitForSeconds(2f);
+                    break;
+                case 4:
+                    yield return new WaitForSeconds(1f);
+                    break;
+                case 5:
+                    break;
+            }
+
             string direction = queue.Dequeue();
 
             vector.Set(0, 0, vector.z);
@@ -62,13 +81,38 @@ public class MovingObject : MonoBehaviour
 
             animator.SetFloat("DirX", vector.x);
             animator.SetFloat("DirY", vector.y);
+
+            while (true)
+            {
+                bool checkCollisionFlag = CheckCollision();
+                // Player가 NPC의 진행방향을 가로막고 있다면 대기
+                if (checkCollisionFlag)
+                {
+                    animator.SetBool("Walking", false);
+                    yield return new WaitForSeconds(1f);
+                }
+                // Player가 NPC의 방향에서 비켜났으면 탈출하고 MoveCoroutine을 마저 실행
+                else
+                {
+                    break;
+                }
+            }
+
             animator.SetBool("Walking", true);
+
+            // boxCollider를 미리 움직이고자 하는 방향으로 살짝 움직여줌
+            boxCollider.offset = new Vector2(vector.x * 0.7f * speed * walkCount, vector.y * 0.7f * speed * walkCount);
 
             // 48픽셀만큼 움직이지 않았을 경우 이동을 계속함
             while (currentWalkCount < walkCount)
             {
                 transform.Translate(vector.x * speed, vector.y * speed, 0);
                 currentWalkCount++;
+                // 절반 이상 걸어왔을 때 boxCollider의 offset을 원위치 시켜줌
+                if (currentWalkCount == 12)
+                {
+                    boxCollider.offset = Vector2.zero;
+                }
                 yield return new WaitForSeconds(0.01f);
             }
             currentWalkCount = 0;
