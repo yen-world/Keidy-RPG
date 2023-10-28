@@ -27,22 +27,26 @@ public class PlayerManager : MovingObject
 
     AudioManager theAudio;
 
-    void Start()
+    void Awake()
     {
         if (instance == null)
         {
             instance = this;
-
             DontDestroyOnLoad(this.gameObject);
-            animator = GetComponent<Animator>();
-            boxCollider = GetComponent<BoxCollider2D>();
-            // AudioManager가 붙은 AudioObject 불러오기
-            theAudio = FindObjectOfType<AudioManager>();
         }
         else
         {
             Destroy(this.gameObject);
         }
+    }
+
+    void Start()
+    {
+        animator = GetComponent<Animator>();
+        boxCollider = GetComponent<BoxCollider2D>();
+        // AudioManager가 붙은 AudioObject 불러오기
+        theAudio = FindObjectOfType<AudioManager>();
+        queue = new Queue<string>();
     }
 
     void Update()

@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class MovingObject : MonoBehaviour
 {
+    public string characterName;
     // 캐릭터의 이동속도
     public float speed;
 
@@ -21,54 +22,63 @@ public class MovingObject : MonoBehaviour
 
     public BoxCollider2D boxCollider;
 
-    // npc가 연속적으로 움직일 경우 coroutine을 탈출하기 위한 변수
-    protected bool npcCanMove = true;
+    public Queue<string> queue;
+
+    bool notCoroutine = false;
 
     // NPC의 이동을 시키는 실질적인 함수, 방향과 속도를 받아옴
-    protected void Move(string _dir, int _frequency)
+    public void Move(string _dir, int _frequency = 5)
     {
-        StartCoroutine(MoveCoroutine(_dir, _frequency));
+        queue.Enqueue(_dir);
+        if (!notCoroutine)
+        {
+            notCoroutine = true;
+            StartCoroutine(MoveCoroutine(_dir, _frequency));
+        }
     }
 
     IEnumerator MoveCoroutine(string _dir, int _frequency)
     {
-        // NPCManager의 MoveCoroutine이 무한히 실행되는 것을 방지하기 위해 false로 변경 
-        npcCanMove = false;
-        vector.Set(0, 0, vector.z);
-        switch (_dir)
+        while (queue.Count != 0)
         {
-            case "UP":
-                vector.y = 1f;
-                break;
-            case "DOWN":
-                vector.y = -1f;
-                break;
-            case "RIGHT":
-                vector.x = 1f;
-                break;
-            case "LEFT":
-                vector.x = -1f;
-                break;
+            string direction = queue.Dequeue();
+
+            vector.Set(0, 0, vector.z);
+            switch (direction)
+            {
+                case "UP":
+                    vector.y = 1f;
+                    break;
+                case "DOWN":
+                    vector.y = -1f;
+                    break;
+                case "RIGHT":
+                    vector.x = 1f;
+                    break;
+                case "LEFT":
+                    vector.x = -1f;
+                    break;
+            }
+
+            animator.SetFloat("DirX", vector.x);
+            animator.SetFloat("DirY", vector.y);
+            animator.SetBool("Walking", true);
+
+            // 48픽셀만큼 움직이지 않았을 경우 이동을 계속함
+            while (currentWalkCount < walkCount)
+            {
+                transform.Translate(vector.x * speed, vector.y * speed, 0);
+                currentWalkCount++;
+                yield return new WaitForSeconds(0.01f);
+            }
+            currentWalkCount = 0;
+
+            // NPC가 연속적으로 움직이고 있다면 Walking 애니메이션을 끄면 안되므로 조건문을 달아 필터링
+            if (_frequency != 5)
+                animator.SetBool("Walking", false);
         }
-
-        animator.SetFloat("DirX", vector.x);
-        animator.SetFloat("DirY", vector.y);
-        animator.SetBool("Walking", true);
-
-        // 48픽셀만큼 움직이지 않았을 경우 이동을 계속함
-        while (currentWalkCount < walkCount)
-        {
-            transform.Translate(vector.x * speed, vector.y * speed, 0);
-            currentWalkCount++;
-            yield return new WaitForSeconds(0.01f);
-        }
-        currentWalkCount = 0;
-
-        // NPC가 연속적으로 움직이고 있다면 Walking 애니메이션을 끄면 안되므로 조건문을 달아 필터링
-        if (_frequency != 5)
-            animator.SetBool("Walking", false);
-
-        npcCanMove = true;
+        animator.SetBool("Walking", false);
+        notCoroutine = false;
     }
 
     protected bool CheckCollision()
