@@ -37,6 +37,16 @@ public class OrderManager : MonoBehaviour
         return tempList;
     }
 
+    public void NotMove()
+    {
+        thePlayer.notMove = true;
+    }
+
+    public void Move()
+    {
+        thePlayer.notMove = false;
+    }
+
     // character 객체 충돌 감지 비활성화 함수
     public void SetThorought(string _name)
     {
