@@ -34,7 +34,6 @@ public class DialogueManager : MonoBehaviour
     public string enterSound;
 
     AudioManager theAudio;
-    OrderManager theOrder;
 
     // 연속된 키 입력으로 인해 Animation 누락을 방지하는 bool 변수
     bool keyActivated = false;
@@ -64,7 +63,6 @@ public class DialogueManager : MonoBehaviour
         listSprites = new List<Sprite>();
         listDialogueWindows = new List<Sprite>();
         theAudio = FindObjectOfType<AudioManager>();
-        theOrder = FindObjectOfType<OrderManager>();
     }
 
     // 대화를 시작하는 함수
@@ -72,7 +70,6 @@ public class DialogueManager : MonoBehaviour
     {
         // 대화를 시작하면 talking을 true로 만들어서 캐릭터의 이동을 제어
         talking = true;
-        theOrder.NotMove();
 
         // 대사의 길이만큼 각 List에 Dialouge 필드들을 추가
         for (int i = 0; i < dialogue.sentences.Length; i++)
@@ -104,7 +101,6 @@ public class DialogueManager : MonoBehaviour
 
         // 대화가 종료되면 Player가 다시 움직일 수 있게함
         talking = false;
-        theOrder.Move();
     }
 
     IEnumerator StartDialogueCoroutine()
