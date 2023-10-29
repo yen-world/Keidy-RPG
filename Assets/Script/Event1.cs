@@ -12,7 +12,7 @@ public class Event1 : MonoBehaviour
     DialogueManager theDM;
     OrderManager theOrder;
     PlayerManager thePlayer;
-
+    FadeManager theFade;
     // OntriggerStay가 한 번만 실행되도록 제어하는 변수
     bool flag;
 
@@ -21,6 +21,7 @@ public class Event1 : MonoBehaviour
         theDM = FindObjectOfType<DialogueManager>();
         theOrder = FindObjectOfType<OrderManager>();
         thePlayer = FindObjectOfType<PlayerManager>();
+        theFade = FindObjectOfType<FadeManager>();
     }
 
     private void OnTriggerStay2D(Collider2D other)
@@ -49,6 +50,8 @@ public class Event1 : MonoBehaviour
         theOrder.Move("Player", "UP");
         yield return new WaitUntil(() => thePlayer.queue.Count == 0);
         yield return new WaitForSeconds(0.5f);
+
+        theFade.Flash();
 
         // 2번째 대화를 실행하고 대화가 종료될 때까지 WaitUntil로 대기
         theDM.ShowDialogue(dialogue_2);
