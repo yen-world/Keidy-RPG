@@ -6,6 +6,8 @@ using UnityEngine.UI;
 
 public class Inventory : MonoBehaviour
 {
+    static public Inventory instance;
+    DatabaseManager theDatabase;
     // 캐릭터 이동 제어와 오디오 출력을 위한 변수
     OrderManager theOrder;
     AudioManager theAudio;
@@ -59,12 +61,26 @@ public class Inventory : MonoBehaviour
 
     WaitForSeconds waitTime = new WaitForSeconds(0.01f);
 
+    void Awake()
+    {
+        if (instance == null)
+        {
+            instance = this;
+            DontDestroyOnLoad(this.gameObject);
+        }
+        else
+        {
+            Destroy(this.gameObject);
+        }
+    }
+
 
     // Start is called before the first frame update
     void Start()
     {
         theOrder = FindObjectOfType<OrderManager>();
         theAudio = FindObjectOfType<AudioManager>();
+        theDatabase = FindObjectOfType<DatabaseManager>();
         inventoryItemList = new List<Item>();
         inventoryTabList = new List<Item>();
         // Grid Slot의 자식 객체인 Slot들을 싹 다 slots에 넣어줌
@@ -80,6 +96,34 @@ public class Inventory : MonoBehaviour
         inventoryItemList.Add(new Item(30001, "고대 유물의 조각 1", "반으로 쪼개진 고대 유물의 파편", Item.ItemType.Quest));
         inventoryItemList.Add(new Item(30002, "고대 유물의 조각 2", "반으로 쪼개진 고대 유물의 파편", Item.ItemType.Quest));
         inventoryItemList.Add(new Item(30003, "고대 유물", "고대 유적에 잠들어있던 고대의 유물", Item.ItemType.Quest));
+    }
+
+    // 아이템 습득 및 추가 시 실행되는 함수
+    public void GetAnItem(int _itemID, int _count = 1)
+    {
+        // 데이터베이스에 등록된 아이템의 갯수만큼 반복
+        for (int i = 0; i < theDatabase.itemList.Count; i++)
+        {
+            // 습득한 아이템의 ID와 데이터베이스에 존재하는 아이템의 ID와 일치하는 경우
+            if (_itemID == theDatabase.itemList[i].itemID)
+            {
+                // 자신의 인벤토리 아이템 갯수만큼 반복
+                for (int j = 0; j < inventoryItemList.Count; j++)
+                {
+                    // 만약 자신이 가지고 있는 아이템이고 소모품일 경우에만 _count만큼 갯수 증가하고 종료
+                    if (_itemID == inventoryItemList[j].itemID && inventoryItemList[j].itemType == Item.ItemType.Use)
+                    {
+                        inventoryItemList[j].itemCount += _count;
+                        return;
+                    }
+                }
+                // 자신이 가진 아이템을 다 찾아봐도 없다면 인벤토리에 갯수만큼 추가 후 종료
+                inventoryItemList.Add(theDatabase.itemList[i]);
+                inventoryItemList[inventoryItemList.Count - 1].itemCount = _count;
+                return;
+            }
+        }
+        Debug.LogError("데이터베이스에 해당 ID값을 가진 아이템이 존재하지 않습니다.");
     }
 
     // 아이템 창을 탭 선택하기 이전에 안보이게 비워두고 탭 선택을 함
