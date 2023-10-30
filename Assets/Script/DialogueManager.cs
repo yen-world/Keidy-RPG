@@ -19,6 +19,10 @@ public class DialogueManager : MonoBehaviour
     List<Sprite> listSprites;
     List<Sprite> listDialogueWindows;
 
+    // SetActive를 하기 위한 변수
+    public GameObject dialogueWindowObject;
+    public GameObject sprtieObject;
+
     // 대화 진행 상황 카운트
     int count;
 
@@ -37,6 +41,9 @@ public class DialogueManager : MonoBehaviour
 
     // 연속된 키 입력으로 인해 Animation 누락을 방지하는 bool 변수
     bool keyActivated = false;
+
+    // 대화가 아닌 단순 텍스트 출력 여부 확인
+    bool onlyText = false;
 
     #region  Singleton
     void Awake()
@@ -65,11 +72,29 @@ public class DialogueManager : MonoBehaviour
         theAudio = FindObjectOfType<AudioManager>();
     }
 
+    public void ShowText(string[] _sentences)
+    {
+        // 대화를 시작하면 talking을 true로 만들어서 캐릭터의 이동을 제어
+        talking = true;
+
+        // 텍스트만 출력하겠다는 변수를 true로 변환
+        onlyText = true;
+        // 대사의 길이만큼 각 List에 Dialouge 필드들을 추가
+        for (int i = 0; i < _sentences.Length; i++)
+        {
+            listSentences.Add(_sentences[i]);
+        }
+        StartCoroutine(StartTextCoroutine());
+    }
+
     // 대화를 시작하는 함수
     public void ShowDialogue(Dialogue dialogue)
     {
         // 대화를 시작하면 talking을 true로 만들어서 캐릭터의 이동을 제어
         talking = true;
+
+        // 텍스트만 출력하겠다는 변수를 false로 변환
+        onlyText = false;
 
         // 대사의 길이만큼 각 List에 Dialouge 필드들을 추가
         for (int i = 0; i < dialogue.sentences.Length; i++)
@@ -78,6 +103,10 @@ public class DialogueManager : MonoBehaviour
             listSprites.Add(dialogue.sprites[i]);
             listDialogueWindows.Add(dialogue.dialogueWindows[i]);
         }
+
+        // DialogueManager 안의 자식 객체들을 전부 활성화
+        dialogueWindowObject.SetActive(true);
+        sprtieObject.SetActive(true);
 
         // 캐릭터 Sprite, 대사창 Sprite를 활성화(Visible)
         animSprite.SetBool("Appear", true);
@@ -173,6 +202,25 @@ public class DialogueManager : MonoBehaviour
         }
     }
 
+    IEnumerator StartTextCoroutine()
+    {
+        // 대사를 빠르게 넘겨서 Sprite가 사라지는 것을 방지하기 위해 true로 설정
+        keyActivated = true;
+
+        // 받아온 대사를 하나씩 끊어서 0.01f초 단위로 TMP에 추가함
+        for (int i = 0; i < listSentences[count].Length; i++)
+        {
+            text.text += listSentences[count][i];
+            // 텍스트가 일정 갯수만큼 출력될 경우 타이핑 Sound 출력
+            if (i % 7 == 1)
+            {
+                theAudio.Play(typeSound);
+            }
+            yield return new WaitForSeconds(0.01f);
+        }
+    }
+
+
     // Update is called once per frame
     void Update()
     {
@@ -200,7 +248,11 @@ public class DialogueManager : MonoBehaviour
                 else
                 {
                     StopAllCoroutines();
-                    StartCoroutine(StartDialogueCoroutine());
+                    // 텍스트만 출력하는거면 StartTextCoroutine 실행, 대화면 StartDialogueCoroutine 실행
+                    if (onlyText)
+                        StartCoroutine(StartTextCoroutine());
+                    else
+                        StartCoroutine(StartDialogueCoroutine());
                 }
             }
         }
