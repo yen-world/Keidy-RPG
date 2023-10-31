@@ -12,6 +12,7 @@ public class Inventory : MonoBehaviour
     OrderManager theOrder;
     AudioManager theAudio;
     UseOrCancel theUse;
+    Equipment theEquip;
 
     // 인벤토리 내 키입력 사운드
     public string key_sound;
@@ -92,6 +93,12 @@ public class Inventory : MonoBehaviour
         inventoryTabList = new List<Item>();
         // Grid Slot의 자식 객체인 Slot들을 싹 다 slots에 넣어줌
         slots = tf.GetComponentsInChildren<InventorySlot>();
+        theEquip = FindObjectOfType<Equipment>();
+    }
+
+    public void EquipToInventory(Item _item)
+    {
+        inventoryItemList.Add(_item);
     }
 
     // 아이템 습득 및 추가 시 실행되는 함수
@@ -414,13 +421,11 @@ public class Inventory : MonoBehaviour
                             // 소비아이템일 경우 UseCoroutine을 실행하여 아이템 소비 구현
                             if (selectedTab == 0)
                             {
-                                theAudio.Play(enter_sound);
-                                stopKeyInput = true;
-                                StartCoroutine(UseCoroutine());
+                                StartCoroutine(UseCoroutine("사용", "취소"));
                             }
                             else if (selectedTab == 1)
                             {
-                                // 장비 장착
+                                StartCoroutine(UseCoroutine("장착", "취소"));
                             }
                             else
                             {
@@ -447,12 +452,15 @@ public class Inventory : MonoBehaviour
     }
 
     // 소모품 사용
-    IEnumerator UseCoroutine()
+    IEnumerator UseCoroutine(string _up, string _down)
     {
+        theAudio.Play(enter_sound);
+        stopKeyInput = true;
+
         // 사용할 것인지 말 것인지 확인하는 UI 출력
         go_UseOrCancel.SetActive(true);
         // 사용 확인 UI를 활성화
-        theUse.ShowTowChoice("사용", "취소");
+        theUse.ShowTowChoice(_up, _down);
         // 사용 확인 UI가 끝날때까지 대기
         yield return new WaitUntil(() => !theUse.activated);
 
@@ -466,14 +474,27 @@ public class Inventory : MonoBehaviour
                 // 현재 선택한 아이템과 일치하는 인벤토리에 소지하고 있는 아이템을 찾음
                 if (inventoryItemList[i].itemID == inventoryTabList[selectedItem].itemID)
                 {
-                    // 갯수가 2개 이상이라면 갯수를 하나 줄여주고, 1개라면 아이템을 삭제(0개라면 위 조건문으로 들어오지 않음)
-                    if (inventoryItemList[i].itemCount > 1)
-                        inventoryItemList[i].itemCount--;
-                    else
+                    // 소모품이라면
+                    if (selectedTab == 0)
+                    {
+                        // 갯수가 2개 이상이라면 갯수를 하나 줄여주고, 1개라면 아이템을 삭제(0개라면 위 조건문으로 들어오지 않음)
+                        if (inventoryItemList[i].itemCount > 1)
+                            inventoryItemList[i].itemCount--;
+                        else
+                            inventoryItemList.RemoveAt(i);
+                        // 아이템이 삭제되면 인벤토리가 갱신되어야하기 때문에 ShowItem() 함수 호출
+                        ShowItem();
+                        break;
+                    }
+                    // 장비템이라면
+                    else if (selectedTab == 1)
+                    {
+                        // 아이템을 장비창에 추가하고 현재 인벤토리에서 삭제 및 인벤토리 갱신
+                        theEquip.EquipItem(inventoryItemList[i]);
                         inventoryItemList.RemoveAt(i);
-                    // 아이템이 삭제되면 인벤토리가 갱신되어야하기 때문에 ShowItem() 함수 호출
-                    ShowItem();
-                    break;
+                        ShowItem();
+                        break;
+                    }
                 }
             }
         }
