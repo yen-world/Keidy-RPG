@@ -11,6 +11,7 @@ public class Inventory : MonoBehaviour
     // 캐릭터 이동 제어와 오디오 출력을 위한 변수
     OrderManager theOrder;
     AudioManager theAudio;
+    UseOrCancel theUse;
 
     // 인벤토리 내 키입력 사운드
     public string key_sound;
@@ -42,6 +43,7 @@ public class Inventory : MonoBehaviour
     public GameObject go;
     // 탭 선택시, 강조되게 보이게 하는 Panel들
     public GameObject[] selectedTabImages;
+    public GameObject go_UseOrCancel;
 
     // 현재 선택된 아이템의 순서 -> 1이면 2번 아이템(파란 포션 등)
     int selectedItem;
@@ -81,21 +83,11 @@ public class Inventory : MonoBehaviour
         theOrder = FindObjectOfType<OrderManager>();
         theAudio = FindObjectOfType<AudioManager>();
         theDatabase = FindObjectOfType<DatabaseManager>();
+        theUse = FindObjectOfType<UseOrCancel>();
         inventoryItemList = new List<Item>();
         inventoryTabList = new List<Item>();
         // Grid Slot의 자식 객체인 Slot들을 싹 다 slots에 넣어줌
         slots = tf.GetComponentsInChildren<InventorySlot>();
-
-        inventoryItemList.Add(new Item(10001, "빨간 포션", "체력을 50 채워주는 기적의 물약", Item.ItemType.Use));
-        inventoryItemList.Add(new Item(10002, "파란 포션", "마나를 15 채워주는 기적의 물약", Item.ItemType.Use));
-        inventoryItemList.Add(new Item(10003, "농축 빨간 포션", "체력을 350 채워주는 기적의 농축 물약", Item.ItemType.Use));
-        inventoryItemList.Add(new Item(10004, "농축 파란 포션", "마나를 80 채워주는 기적의 농축 물약", Item.ItemType.Use));
-        inventoryItemList.Add(new Item(11001, "랜덤 상자", "랜덤으로 포션이 나온다. 낮은 확률로 꽝", Item.ItemType.Use));
-        inventoryItemList.Add(new Item(20001, "짧은 검", "기본적인 용사의 검", Item.ItemType.Equip));
-        inventoryItemList.Add(new Item(21001, "사파이어 반지", "1분에 마나 1을 회복시켜주는 마법 반지", Item.ItemType.Equip));
-        inventoryItemList.Add(new Item(30001, "고대 유물의 조각 1", "반으로 쪼개진 고대 유물의 파편", Item.ItemType.Quest));
-        inventoryItemList.Add(new Item(30002, "고대 유물의 조각 2", "반으로 쪼개진 고대 유물의 파편", Item.ItemType.Quest));
-        inventoryItemList.Add(new Item(30003, "고대 유물", "고대 유적에 잠들어있던 고대의 유물", Item.ItemType.Quest));
     }
 
     // 아이템 습득 및 추가 시 실행되는 함수
@@ -407,10 +399,12 @@ public class Inventory : MonoBehaviour
                         // Z키를 누르고 중복처리 되지 않는다면 아이템 사용 및 장착
                         else if (Input.GetKeyDown(KeyCode.Z) && !preventExec)
                         {
+                            // 소비아이템일 경우 UseCoroutine을 실행하여 아이템 소비 구현
                             if (selectedTab == 0)
                             {
                                 theAudio.Play(enter_sound);
                                 stopKeyInput = true;
+                                StartCoroutine(UseCoroutine());
                             }
                             else if (selectedTab == 1)
                             {
@@ -438,5 +432,41 @@ public class Inventory : MonoBehaviour
                     preventExec = false;
             }
         }
+    }
+
+    // 소모품 사용
+    IEnumerator UseCoroutine()
+    {
+        // 사용할 것인지 말 것인지 확인하는 UI 출력
+        go_UseOrCancel.SetActive(true);
+        // 사용 확인 UI를 활성화
+        theUse.ShowTowChoice("사용", "취소");
+        // 사용 확인 UI가 끝날때까지 대기
+        yield return new WaitUntil(() => !theUse.activated);
+
+        // 사용을 했다면 여기로, 아니라면 실행하지 않음
+        if (theUse.GetResult())
+        {
+            for (int i = 0; i < inventoryItemList.Count; i++)
+            {
+                // 데이터베이스에 접근해서 현재 가지고 있는 아이템ID와 일치하는 효과를 출력
+                theDatabase.UseItem(inventoryItemList[i].itemID);
+                // 현재 선택한 아이템과 일치하는 인벤토리에 소지하고 있는 아이템을 찾음
+                if (inventoryItemList[i].itemID == inventoryTabList[selectedItem].itemID)
+                {
+                    // 갯수가 2개 이상이라면 갯수를 하나 줄여주고, 1개라면 아이템을 삭제(0개라면 위 조건문으로 들어오지 않음)
+                    if (inventoryItemList[i].itemCount > 1)
+                        inventoryItemList[i].itemCount--;
+                    else
+                        inventoryItemList.RemoveAt(i);
+                    // 아이템이 삭제되면 인벤토리가 갱신되어야하기 때문에 ShowItem() 함수 호출
+                    ShowItem();
+                    break;
+                }
+            }
+        }
+        // 키 입력을 이제 받아오고 확인 UI를 꺼준다
+        stopKeyInput = false;
+        go_UseOrCancel.SetActive(false);
     }
 }

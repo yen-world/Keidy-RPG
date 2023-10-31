@@ -16,6 +16,19 @@ public class DatabaseManager : MonoBehaviour
 
     public List<Item> itemList = new List<Item>();
 
+    // 아이템 ID에 따른 효과를 부여함
+    public void UseItem(int _itemId)
+    {
+        switch (_itemId)
+        {
+            case 10001:
+                Debug.Log("hp가 50 회복되었습니다.");
+                break;
+            case 10002:
+                Debug.Log("mp가 15 회복되었습니다.");
+                break;
+        }
+    }
     void Awake()
     {
         if (instance == null)
