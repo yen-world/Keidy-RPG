@@ -8,6 +8,9 @@ public class HurtEnemy : MonoBehaviour
     public GameObject prefabs_Floating_Text;
     public GameObject parent;
 
+    // 이펙트 프리팹을 담을 오브젝트
+    public GameObject effect;
+
     // 플레이어 공격 사운드
     public string atkSound;
 
@@ -30,6 +33,8 @@ public class HurtEnemy : MonoBehaviour
 
             // 플로팅 텍스트를 위한 Vector값 조절 및 텍스트, 컬러, 폰트사이즈 조절
             Vector3 vector = other.transform.position;
+            // 몬스터의 몸체에 공격 이펙트가 터지게함
+            Instantiate(effect, vector, Quaternion.Euler(Vector3.zero));
             vector.y += 60;
 
             GameObject clone = Instantiate(prefabs_Floating_Text, vector, Quaternion.Euler(Vector3.zero));

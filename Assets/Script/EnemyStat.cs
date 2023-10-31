@@ -34,6 +34,7 @@ public class EnemyStat : MonoBehaviour
         {
             Destroy(this.gameObject);
             PlayerStat.instance.currentExp += exp;
+            // 이 부분에서 레벨업 검사 함수를 작성해도 괜찮을듯? 플레이어의 레벨업 수단이 몬스터 처치 밖에 없다면
         }
         return dmg;
     }

@@ -13353,6 +13353,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   prefabs_Floating_Text: {fileID: 7149601723252507753, guid: c0a31f1f378198644bea36a89ef32097, type: 3}
   parent: {fileID: 879069234}
+  effect: {fileID: 3566738490681025638, guid: f3a7f4ac0c165884dba2e72bc97c9864, type: 3}
   atkSound: dmg_sound
 --- !u!212 &1994289380
 SpriteRenderer:
