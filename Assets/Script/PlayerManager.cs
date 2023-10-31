@@ -26,8 +26,17 @@ public class PlayerManager : MovingObject
     public string walkSound_4;
 
     AudioManager theAudio;
+
     // Player가 대화중일때 이동하지 못하게 하는 변수
     public bool notMove = false;
+
+    // 공격중인지 아닌지 체크
+    bool attacking = false;
+    // 공격 대기 시간(공격 속도)
+    public float attackDelay;
+    // 공격 대기 시간 확인하는 변수
+    float currentAttackDelay;
+
 
     void Awake()
     {
@@ -53,7 +62,7 @@ public class PlayerManager : MovingObject
 
     void Update()
     {
-        if (canMove && !notMove)
+        if (canMove && !notMove && !attacking)
         {
             // 방향키 입력 감지
             if (Input.GetAxisRaw("Horizontal") != 0 || Input.GetAxisRaw("Vertical") != 0)
@@ -62,13 +71,33 @@ public class PlayerManager : MovingObject
                 StartCoroutine(MoveCoroutine());
             }
         }
+
+        if (!notMove && !attacking)
+        {
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                currentAttackDelay = attackDelay;
+                attacking = true;
+                animator.SetBool("Attacking", true);
+            }
+        }
+
+        if (attacking)
+        {
+            currentAttackDelay -= Time.deltaTime;
+            if (currentAttackDelay <= 0)
+            {
+                animator.SetBool("Attacking", false);
+                attacking = false;
+            }
+        }
     }
 
     // 캐릭터의 이동이 끝날때까지 대기하게 하기 위한 코루틴
     IEnumerator MoveCoroutine()
     {
         // 처음 키를 눌러서 Coroutine에 진입을 했고, 키를 계속 누르고 있다면 While문 안의 내용을 계속 반복 실행 
-        while (Input.GetAxisRaw("Horizontal") != 0 || Input.GetAxisRaw("Vertical") != 0 && !notMove)
+        while (Input.GetAxisRaw("Horizontal") != 0 || Input.GetAxisRaw("Vertical") != 0 && !notMove && !attacking)
         {
             // 왼쪽 쉬프트를 누르면 이동 속도 증가 및 플래그 설정
             if (Input.GetKey(KeyCode.LeftShift))

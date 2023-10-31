@@ -41,7 +41,20 @@ public class PlayerStat : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // 현재 경험치가 필요한 경험치량을 채웠다면
+        if (currentExp >= needExp[character_level])
+        {
+            // 남은 경험치는 다음 레벨의 필요한 경험치로 이전시키고 레벨, 체력, 마나를 증가시키고, 현재 체력과 마나를 채워주고 공격력과 방어력도 올려준다.
+            currentExp -= needExp[character_level];
+            character_level++;
+            hp += character_level * 2;
+            mp += character_level + 2;
 
+            currentHP = hp;
+            currentMP = mp;
+            atk++;
+            def++;
+        }
     }
 
     // 플레이어 피격시 실행 함수
