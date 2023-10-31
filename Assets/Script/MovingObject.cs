@@ -109,7 +109,7 @@ public class MovingObject : MonoBehaviour
                 transform.Translate(vector.x * speed, vector.y * speed, 0);
                 currentWalkCount++;
                 // 절반 이상 걸어왔을 때 boxCollider의 offset을 원위치 시켜줌
-                if (currentWalkCount == 12)
+                if (currentWalkCount == walkCount * 0.5f + 2)
                 {
                     boxCollider.offset = Vector2.zero;
                 }
