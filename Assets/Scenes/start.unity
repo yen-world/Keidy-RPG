@@ -254,6 +254,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 05b732b8e71aefb4b9c91179c31b1585, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  prefabs_Floating_Text: {fileID: 7149601723252507753, guid: c0a31f1f378198644bea36a89ef32097, type: 3}
+  parent: {fileID: 879069234}
   var_name: []
   var: []
   switch_name: []
@@ -10616,6 +10618,11 @@ MonoBehaviour:
     source: {fileID: 0}
     volume: 1
     loop: 0
+  - name: dmg_sound
+    clip: {fileID: 8300000, guid: 633adbd746c635f4a9df3758a1ed66c8, type: 3}
+    source: {fileID: 0}
+    volume: 1
+    loop: 0
 --- !u!1 &1378601632
 GameObject:
   m_ObjectHideFlags: 0
@@ -12054,7 +12061,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b41b1a9b145c3d41a158f2d787d9289, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemID: 10002
+  itemID: 10001
   count: 1
   pickUpSound: enter_sound
 --- !u!1 &1676608268
@@ -13701,6 +13708,7 @@ GameObject:
   - component: {fileID: 2076654756}
   - component: {fileID: 2076654757}
   - component: {fileID: 2076654758}
+  - component: {fileID: 2076654759}
   m_Layer: 8
   m_Name: Player
   m_TagString: Untagged
@@ -13869,6 +13877,30 @@ MonoBehaviour:
   walkSound_3: footsteps 3
   walkSound_4: footsteps 4
   notMove: 0
+--- !u!114 &2076654759
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2076654751}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a1331c1ec7901d843a9329b6db87410c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hp: 50
+  currentHP: 50
+  mp: 0
+  currentMP: 0
+  character_level: 1
+  needExp: 
+  currentExp: 0
+  atk: 0
+  def: 0
+  dmgSound: dmg_sound
+  prefab_Floating_text: {fileID: 7149601723252507753, guid: c0a31f1f378198644bea36a89ef32097, type: 3}
+  parent: {fileID: 879069234}
 --- !u!1 &2087121756
 GameObject:
   m_ObjectHideFlags: 0

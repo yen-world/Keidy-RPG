@@ -87,7 +87,7 @@ public class SlimeController : MovingObject
 
         // 공격 모션이 이미 실행중이고, 여전히 플레이어가 옆에 있다면 데미지를 입힘(없으면 공격 모션만 나오고 데미지는 입히지 않음)
         if (NearPlayer())
-            Debug.Log("슬라임이 플레이어에게 " + atk + "만큼의 데미지를 입혔습니다.");
+            PlayerStat.instance.Hit(atk);
     }
 
     // 슬라임이 랜덤한 방향으로 움직이게 하는 함수
