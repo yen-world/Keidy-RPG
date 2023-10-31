@@ -43,7 +43,11 @@ public class Inventory : MonoBehaviour
     public GameObject go;
     // 탭 선택시, 강조되게 보이게 하는 Panel들
     public GameObject[] selectedTabImages;
+    // 아이템 사용, 취소 오브젝트
     public GameObject go_UseOrCancel;
+    // 아이템을 획득하면 화면에 출력될 텍스트 오브젝트
+    public GameObject prefab_floating_Text;
+
 
     // 현재 선택된 아이템의 순서 -> 1이면 2번 아이템(파란 포션 등)
     int selectedItem;
@@ -99,6 +103,14 @@ public class Inventory : MonoBehaviour
             // 습득한 아이템의 ID와 데이터베이스에 존재하는 아이템의 ID와 일치하는 경우
             if (_itemID == theDatabase.itemList[i].itemID)
             {
+                // clone이란 변수에 floating_text 프리팹을 넣고, 플레이어의 위치에 복제
+                // 복제됨과 동시에 floating_text 프리팹에는 스크립트가 달려있어서 update함수를 돌다가 파괴될것임
+                var clone = Instantiate(prefab_floating_Text, PlayerManager.instance.transform.position, Quaternion.Euler(Vector3.zero));
+                // clone의 text 컴포넌트를 가져와서 해당 아이템 이름에 접근해 새로 세팅
+                clone.GetComponent<FloatingText>().text.text = theDatabase.itemList[i].itemName + "를 " + _count + "개 획득하였습니다.";
+                // clone의 부모 위치를 변경(this는 Inventory, Inventory는 Canvas의 자식 관계로 있으니 Canvas의 자식으로 clone이 들어가게 됨)
+                clone.transform.SetParent(this.transform);
+
                 // 자신의 인벤토리 아이템 갯수만큼 반복
                 for (int j = 0; j < inventoryItemList.Count; j++)
                 {

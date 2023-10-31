@@ -2559,6 +2559,7 @@ MonoBehaviour:
   - {fileID: 1204024663}
   - {fileID: 934630528}
   go_UseOrCancel: {fileID: 2087121756}
+  prefab_floating_Text: {fileID: 7149601723252507753, guid: c0a31f1f378198644bea36a89ef32097, type: 3}
 --- !u!1 &689820286
 GameObject:
   m_ObjectHideFlags: 0

@@ -10,11 +10,8 @@ public class ItemPickUp : MonoBehaviour
 
     private void OnTriggerStay2D(Collider2D other)
     {
-        if (Input.GetKeyDown(KeyCode.Z))
-        {
-            AudioManager.instance.Play(pickUpSound);
-            Inventory.instance.GetAnItem(itemID, count);
-            Destroy(this.gameObject);
-        }
+        AudioManager.instance.Play(pickUpSound);
+        Inventory.instance.GetAnItem(itemID, count);
+        Destroy(this.gameObject);
     }
 }
