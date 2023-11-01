@@ -27,6 +27,15 @@ public class PlayerStat : MonoBehaviour
     public int def;
     // 플레이어의 피격사운드
     public string dmgSound;
+
+    // 단위시간당 체력, 마나 재생
+    public int recovery_Hp;
+    public int recovery_Mp;
+
+    // 단위시간을 정해줄 변수(1초, 2초, 3초 등)
+    public float time;
+    float current_time;
+
     // 데미지 관련 수치를 나타낼 텍스트 오브젝트
     public GameObject prefab_Floating_text;
     // 플로팅 텍스트는 UI기때문에 Canvas 바로 밑에 자식으로 생성되게 하기 위해서 Canvas를 담을 오브젝트
@@ -36,6 +45,8 @@ public class PlayerStat : MonoBehaviour
     void Start()
     {
         instance = this;
+        currentHP = hp;
+        current_time = time;
     }
 
     // Update is called once per frame
@@ -55,7 +66,22 @@ public class PlayerStat : MonoBehaviour
             atk++;
             def++;
         }
+        // current_time을 매 프레임마다 감소시켜서 0 이하가 되면 체력 재생이 이루어지게함.
+        current_time -= Time.deltaTime;
+
+        if (current_time <= 0)
+        {
+            if (recovery_Hp > 0)
+            {
+                if (currentHP + recovery_Hp <= hp)
+                    currentHP += recovery_Hp;
+                else
+                    currentHP = hp;
+            }
+            current_time = time;
+        }
     }
+
 
     // 플레이어 피격시 실행 함수
     public void Hit(int _enemyAtk)
