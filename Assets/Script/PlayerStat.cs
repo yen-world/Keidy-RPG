@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerStat : MonoBehaviour
 {
@@ -41,17 +42,29 @@ public class PlayerStat : MonoBehaviour
     // 플로팅 텍스트는 UI기때문에 Canvas 바로 밑에 자식으로 생성되게 하기 위해서 Canvas를 담을 오브젝트
     public GameObject parent;
 
+    // 플레이어 체력, 마나 HUD UI
+    public Slider hpSlider;
+    public Slider mpSlider;
     // Start is called before the first frame update
     void Start()
     {
         instance = this;
         currentHP = hp;
+        currentMP = mp;
         current_time = time;
     }
 
     // Update is called once per frame
     void Update()
     {
+        // 체력, 마나바의 최대값을 최대체력으로 설정
+        hpSlider.maxValue = hp;
+        mpSlider.maxValue = mp;
+
+        // 현재 체력, 마나바의 값을 현재 체력, 마나 값으로 설정
+        hpSlider.value = currentHP;
+        mpSlider.value = currentMP;
+
         // 현재 경험치가 필요한 경험치량을 채웠다면
         if (currentExp >= needExp[character_level])
         {
