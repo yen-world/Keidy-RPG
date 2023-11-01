@@ -37,6 +37,9 @@ public class Equipment : MonoBehaviour
     // 장비창 전체 UI를 담을 오브젝트
     public GameObject go;
 
+    // 게임 씬에 보여지는 플레이어가 착용하고 있는 무기 오브젝트
+    public GameObject equipWeapon;
+
     // 장비창의 능력치 텍스트를 세팅할 텍스트
     public TMP_Text[] text;
     // 장비창의 장비 슬롯에 들어갈 아이템 이미지들
@@ -103,6 +106,9 @@ public class Equipment : MonoBehaviour
         {
             case "200":
                 EquipItemCheck(WEAPON, _item);
+                // 무기를 장착했다면 무기를 활성화시켜주고, 무기의 이미지를 바꿔준다.
+                equipWeapon.SetActive(true);
+                equipWeapon.GetComponent<SpriteRenderer>().sprite = _item.itemIcon;
                 break;
             case "201":
                 EquipItemCheck(SHILED, _item);
@@ -330,6 +336,9 @@ public class Equipment : MonoBehaviour
             // 현재 착용중인 부위의 아이템을 인벤토리로 보내고, 비어있는 슬롯을 초기화해줌
             theInven.EquipToInventory(equipItemList[selectedSlot]);
             TakeOffEffect(equipItemList[selectedSlot]);
+            // 만약 무기를 해제했다면 무기를 비활성화 시켜준다
+            if (selectedSlot == WEAPON)
+                equipWeapon.SetActive(false);
             ShowText();
             equipItemList[selectedSlot] = new Item(0, "", "", Item.ItemType.Equip);
             theAudio.Play(takeoff_sound);
