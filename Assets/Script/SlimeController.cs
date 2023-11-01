@@ -21,6 +21,8 @@ public class SlimeController : MovingObject
     // 슬라임이 바라보고 있는 방향
     string direction;
 
+    public GameObject healthBar;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -70,6 +72,7 @@ public class SlimeController : MovingObject
         else
             flip.x = 1f;
 
+        healthBar.transform.localScale = flip;
         this.transform.localScale = flip;
         animator.SetTrigger("Attack");
 
