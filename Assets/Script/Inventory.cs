@@ -96,6 +96,16 @@ public class Inventory : MonoBehaviour
         theEquip = FindObjectOfType<Equipment>();
     }
 
+    public List<Item> SaveItem()
+    {
+        return inventoryItemList;
+    }
+
+    public void LoadItem(List<Item> _itmeList)
+    {
+        inventoryItemList = _itmeList;
+    }
+
     public void EquipToInventory(Item _item)
     {
         inventoryItemList.Add(_item);

@@ -14076,7 +14076,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0759c299508b92f4da8c6bfa4e6f8f53, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  transferMapName: 
+  transferMapName: School Front
   target: {fileID: 382594525}
   targetBound: {fileID: 1941497324}
   anim_1: {fileID: 0}
@@ -14658,6 +14658,10 @@ MonoBehaviour:
   close_sound: break_sound
   takeoff_sound: slime_sound
   equip_sound: enter_sound
+  added_atk: 0
+  added_def: 0
+  added_hpr: 0
+  added_mpr: 0
   go: {fileID: 279574726}
   equipWeapon: {fileID: 660682045}
   text:
@@ -15740,6 +15744,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a762f981d8499a548ad933735f49deed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  boundName: Forest
 --- !u!1 &1752809903
 GameObject:
   m_ObjectHideFlags: 0
@@ -16913,6 +16918,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1941497325}
   - component: {fileID: 1941497324}
+  - component: {fileID: 1941497326}
   m_Layer: 0
   m_Name: B bound
   m_TagString: Untagged
@@ -16961,6 +16967,19 @@ Transform:
   m_Father: {fileID: 493526635}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1941497326
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1941497323}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a762f981d8499a548ad933735f49deed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  boundName: School Front
 --- !u!1 &1944643989
 GameObject:
   m_ObjectHideFlags: 0
@@ -17658,6 +17677,8 @@ GameObject:
   - component: {fileID: 2076654757}
   - component: {fileID: 2076654758}
   - component: {fileID: 2076654759}
+  - component: {fileID: 2076654761}
+  - component: {fileID: 2076654760}
   m_Layer: 8
   m_Name: Player
   m_TagString: Untagged
@@ -17822,7 +17843,8 @@ MonoBehaviour:
     m_Bits: 256
   boxCollider: {fileID: 2076654756}
   runSpeed: 2.4
-  currentMapName: 
+  currentMapName: Forest
+  currentSceneName: start
   walkSound_1: footsteps 1
   walkSound_2: footsteps 2
   walkSound_3: footsteps 3
@@ -17858,6 +17880,57 @@ MonoBehaviour:
   parent: {fileID: 879069234}
   hpSlider: {fileID: 345177749}
   mpSlider: {fileID: 1623047847}
+--- !u!114 &2076654760
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2076654751}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 23dbe29080469c044b550567ca95d1e7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &2076654761
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2076654751}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 77d7af3ef44033546ac810a0a78bc89b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  data:
+    playerX: 0
+    playerY: 0
+    playerZ: 0
+    playerLv: 0
+    playerHP: 0
+    playerMP: 0
+    playerHPR: 0
+    playerMPR: 0
+    playerATK: 0
+    playerDEF: 0
+    playerCurrentHP: 0
+    playerCurrentMP: 0
+    playerCurrentEXP: 0
+    added_atk: 0
+    added_def: 0
+    added_recover_hpr: 0
+    added_recover_mpr: 0
+    playerItemInventory: 
+    playerItemInventoryCount: 
+    playerEquipItem: 
+    mapName: 
+    sceneName: 
+    swList: 
+    swNameList: []
+    varNameList: []
+    varNumberList: []
 --- !u!1 &2087121756
 GameObject:
   m_ObjectHideFlags: 0

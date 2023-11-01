@@ -16,6 +16,9 @@ public class PlayerManager : MovingObject
     // 이동하고자 하는 맵의 이름을 TransferMap에서 받아오기 위한 변수
     public string currentMapName;
 
+    // 현재 캐릭터가 있는 씬의 위치 이름
+    public string currentSceneName;
+
     // 싱글톤 디자인 패턴을 구현하기 위한 static instance
     static public PlayerManager instance;
 
@@ -25,6 +28,7 @@ public class PlayerManager : MovingObject
     public string walkSound_3;
     public string walkSound_4;
 
+    SaveAndLoad theSaveLoad;
     AudioManager theAudio;
 
     // Player가 대화중일때 이동하지 못하게 하는 변수
@@ -58,10 +62,23 @@ public class PlayerManager : MovingObject
         // AudioManager가 붙은 AudioObject 불러오기
         theAudio = FindObjectOfType<AudioManager>();
         queue = new Queue<string>();
+        theSaveLoad = FindObjectOfType<SaveAndLoad>();
     }
 
     void Update()
     {
+        // 세이브
+        if (Input.GetKeyDown(KeyCode.F5))
+        {
+            theSaveLoad.CallSave();
+        }
+
+        // 로드
+        if (Input.GetKeyDown(KeyCode.F9))
+        {
+            theSaveLoad.CallLoad();
+        }
+
         if (canMove && !notMove && !attacking)
         {
             // 방향키 입력 감지

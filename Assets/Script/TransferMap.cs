@@ -105,6 +105,7 @@ public class TransferMap : MonoBehaviour
         theOrder.NotMove();
         theFade.FadeOut();
 
+        thePlayer.currentMapName = transferMapName;
         // 문을 열고 들어가야 한다면 문의 갯수에 맞게 Animation 실행 후 0.5초 대기
         if (door)
         {

@@ -32,7 +32,7 @@ public class Equipment : MonoBehaviour
               HPR = 6, MPR = 7, CRI = 8, AVD = 9, HIT = 10;
 
     // 장비 아이템 등으로 추가된 능력치
-    int added_atk, added_def, added_hpr, added_mpr;
+    public int added_atk, added_def, added_hpr, added_mpr;
 
     // 장비창 전체 UI를 담을 오브젝트
     public GameObject go;
