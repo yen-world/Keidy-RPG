@@ -67,12 +67,6 @@ public class PlayerManager : MovingObject
 
     void Update()
     {
-        // 세이브
-        if (Input.GetKeyDown(KeyCode.F5))
-        {
-            theSaveLoad.CallSave();
-        }
-
         // 로드
         if (Input.GetKeyDown(KeyCode.F9))
         {
