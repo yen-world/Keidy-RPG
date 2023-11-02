@@ -55,6 +55,13 @@ public class Inventory : MonoBehaviour
     // 현재 선택된 탭의 순서 -> 1이면 2번 탭(장비)
     int selectedTab;
 
+    // 페이지
+    int page;
+    // 활성화된 슬롯의 개수
+    int slotCount;
+    // 최대 슬롯 개수
+    const int MAX_SLOTS_COUNT = 12;
+
     // 인벤토리가 켜져있는지 체크
     bool activated;
     // 현재 탭을 선택하고 있는지 체크
@@ -212,6 +219,9 @@ public class Inventory : MonoBehaviour
         RemoveSlot();
         selectedItem = 0;
 
+        // 인벤토리를 열때마다 0번 페이지가 나오도록
+        page = 0;
+
         // 현재 탭이 1번이라면 case 1번으로 가서 itemType이 Equip인 아이템만 inventoryTabList에 추가한다
         switch (selectedTab)
         {
@@ -245,12 +255,8 @@ public class Inventory : MonoBehaviour
                 break;
         }
 
-        // 탭별 아이템의 갯수만큼 slots을 활성화시키고 slots에 아이템을 추가한다
-        for (int i = 0; i < inventoryTabList.Count; i++)
-        {
-            slots[i].gameObject.SetActive(true);
-            slots[i].AddItem(inventoryTabList[i]);
-        }
+        // 현재 페이지를 보여줌
+        ShowPage();
 
         // Item 목록을 보여주면 첫번째 아이템이 선택되게
         SelectedItem();
@@ -261,11 +267,11 @@ public class Inventory : MonoBehaviour
     {
         StopAllCoroutines();
         // 예를 들어 소비탭에 아이템을 하나라도 가지고 있어야 설명 텍스트를 변경하고, Alpha 값을 변경해줌
-        if (inventoryTabList.Count > 0)
+        if (slotCount > -1)
         {
             Color color = slots[0].selected_Item.GetComponent<Image>().color;
             color.a = 0f;
-            for (int i = 0; i < inventoryTabList.Count; i++)
+            for (int i = 0; i <= slotCount; i++)
                 slots[i].selected_Item.GetComponent<Image>().color = color;
             description_Text.text = inventoryTabList[selectedItem].itemDescription;
             StartCoroutine(SelectedItemEffectCoroutine());
@@ -302,6 +308,25 @@ public class Inventory : MonoBehaviour
         }
     }
 
+    // 현재 페이지를 출력함
+    public void ShowPage()
+    {
+        slotCount = -1;
+
+        // 탭별 아이템의 갯수만큼 slots을 활성화시키고 slots에 아이템을 추가한다
+        // i는 12, 24, 36, 48, ... 
+        for (int i = page * MAX_SLOTS_COUNT; i < inventoryTabList.Count; i++)
+        {
+            // slotCount를 0부터 11까지 반복하면서 현재 페이지에 아이템을 추가
+            slotCount = i - (page * MAX_SLOTS_COUNT);
+            slots[slotCount].gameObject.SetActive(true);
+            slots[slotCount].AddItem(inventoryTabList[i]);
+
+            // 아이템 페이지에 12개만 출력돼야하니까 12번 반복하고 반복문 탈출
+            if (slotCount == MAX_SLOTS_COUNT - 1)
+                break;
+        }
+    }
 
 
     // Update is called once per frame
@@ -391,7 +416,24 @@ public class Inventory : MonoBehaviour
                     {
                         if (Input.GetKeyDown(KeyCode.DownArrow))
                         {
-                            if (selectedItem < inventoryTabList.Count - 2)
+                            // 아래키를 누르면 페이지가 넘어가야 될 경우
+                            if (selectedItem + 2 > slotCount)
+                            {
+                                // 현재 페이지가 마지막 페이지인지 아닌지 비교
+                                if (page < (inventoryTabList.Count - 1) / MAX_SLOTS_COUNT)
+                                    page++;
+                                else
+                                    page = 0;
+
+                                RemoveSlot();
+                                ShowPage();
+
+                                // 페이지를 넘기지 않았을 경우에는 아래 조건문에서 seletedItem을 +2 해주니까 여기서 2를 빼줘서 0으로 만들어야함
+                                selectedItem = -2;
+                            }
+
+                            // 현제 페이지의 마지막 슬롯-1보다 작으면 선택 칸을 2칸 뒤로 옮김
+                            if (selectedItem < slotCount - 1)
                                 selectedItem += 2;
                             else
                                 selectedItem %= 2;
@@ -400,25 +442,62 @@ public class Inventory : MonoBehaviour
                         }
                         else if (Input.GetKeyDown(KeyCode.UpArrow))
                         {
+                            // 위키를 누르면 페이지가 넘어가야 될 경우
+                            if (selectedItem - 2 < 0)
+                            {
+                                // 첫번째 페이지가 아니라면 페이지를 감소
+                                if (page != 0)
+                                    page--;
+                                // 첫번째 페이지라면 마지막 페이지로 이동
+                                else
+                                    page = (inventoryTabList.Count - 1) / MAX_SLOTS_COUNT;
+
+                                RemoveSlot();
+                                ShowPage();
+                            }
+
                             if (selectedItem > 1)
                                 selectedItem -= 2;
                             else
-                                selectedItem = inventoryTabList.Count - 1 - selectedItem;
+                                selectedItem = slotCount - selectedItem;
                             theAudio.Play(key_sound);
                             SelectedItem();
                         }
                         else if (Input.GetKeyDown(KeyCode.LeftArrow))
                         {
+                            if (selectedItem - 1 < 0)
+                            {
+                                if (page != 0)
+                                    page--;
+                                else
+                                    page = (inventoryTabList.Count - 1) / MAX_SLOTS_COUNT;
+
+                                RemoveSlot();
+                                ShowPage();
+                            }
+
                             if (selectedItem > 0)
                                 selectedItem--;
                             else
-                                selectedItem = inventoryTabList.Count - 1;
+                                selectedItem = slotCount;
                             theAudio.Play(key_sound);
                             SelectedItem();
                         }
                         else if (Input.GetKeyDown(KeyCode.RightArrow))
                         {
-                            if (selectedItem < inventoryTabList.Count - 1)
+                            if (selectedItem + 1 > slotCount)
+                            {
+                                if (page < (inventoryTabList.Count - 1) / MAX_SLOTS_COUNT)
+                                    page++;
+                                else
+                                    page = 0;
+
+                                RemoveSlot();
+                                ShowPage();
+                                selectedItem = -1;
+                            }
+
+                            if (selectedItem < slotCount)
                                 selectedItem++;
                             else
                                 selectedItem = 0;
