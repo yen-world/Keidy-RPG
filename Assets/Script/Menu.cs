@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Menu : MonoBehaviour
 {
@@ -19,6 +20,7 @@ public class Menu : MonoBehaviour
     // Menu UI의 활성화 체크
     bool activated;
 
+    public GameObject[] gos;
     void Awake()
     {
         if (instance == null)
@@ -45,6 +47,20 @@ public class Menu : MonoBehaviour
         theOrder.Move();
         go.SetActive(false);
         theAudio.Play(cancel_sound);
+    }
+
+    // 타이틀로 가는 버튼 클릭시 실행
+    public void GoToTitle()
+    {
+        // 기존에 객체들의 정보를 가지고 타이틀로 넘어가지 않게 모든 오브젝트를 삭제
+        // 삭제 후 재생성되면 값이 초기화가 되기 때문
+        for (int i = 0; i < gos.Length; i++)
+            Destroy(gos[i]);
+
+        go.SetActive(false);
+        activated = false;
+        SceneManager.LoadScene("Title");
+
     }
 
     // Update is called once per frame

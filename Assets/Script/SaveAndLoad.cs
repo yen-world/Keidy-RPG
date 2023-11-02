@@ -62,6 +62,7 @@ public class SaveAndLoad : MonoBehaviour
     DatabaseManager theDatabase;
     Inventory theInven;
     Equipment theEquip;
+    FadeManager theFade;
 
     // data 객체를 만들어서 이 객체에 저장해야 하는 요소들을 넣을 것임
     public Data data;
@@ -171,6 +172,9 @@ public class SaveAndLoad : MonoBehaviour
             theDatabase = FindObjectOfType<DatabaseManager>();
             theInven = FindObjectOfType<Inventory>();
             theEquip = FindObjectOfType<Equipment>();
+            theFade = FindObjectOfType<FadeManager>();
+
+            theFade.FadeOut();
 
             // 캐릭터 위치값 로드
             vector.Set(data.playerX, data.playerY, data.playerZ);
@@ -245,11 +249,9 @@ public class SaveAndLoad : MonoBehaviour
             theInven.LoadItem(itemList);
             theEquip.ShowText();
 
-            // 카메라의 전환을 위한 함수 호출
-            // 씬이 로드되면 모든 내용이 초기화가 되기 때문에 씬 전환 이후 바로 함수가 호출 될 수 있도록 Coroutine으로 작성함
-            GameManager theGM = FindObjectOfType<GameManager>();
-            theGM.LoadStart();
-            SceneManager.LoadScene(data.sceneName);
+
+
+            StartCoroutine(WaitCoroutine());
         }
         else
         {
@@ -257,5 +259,16 @@ public class SaveAndLoad : MonoBehaviour
         }
 
         file.Close();
+    }
+
+    IEnumerator WaitCoroutine()
+    {
+        yield return new WaitForSeconds(2f);
+
+        // 카메라의 전환을 위한 함수 호출
+        // 씬이 로드되면 모든 내용이 초기화가 되기 때문에 씬 전환 이후 바로 함수가 호출 될 수 있도록 Coroutine으로 작성함
+        GameManager theGM = FindObjectOfType<GameManager>();
+        theGM.LoadStart();
+        SceneManager.LoadScene(data.sceneName);
     }
 }

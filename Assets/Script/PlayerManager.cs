@@ -67,12 +67,6 @@ public class PlayerManager : MovingObject
 
     void Update()
     {
-        // 로드
-        if (Input.GetKeyDown(KeyCode.F9))
-        {
-            theSaveLoad.CallLoad();
-        }
-
         if (canMove && !notMove && !attacking)
         {
             // 방향키 입력 감지
