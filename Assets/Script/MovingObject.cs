@@ -132,8 +132,9 @@ public class MovingObject : MonoBehaviour
         RaycastHit2D hit;
 
         // 캐릭터의 현재위치와 캐릭터가 나아갈 위치를 대입
-        Vector2 start = transform.position; ;
-        Vector2 end = start + new Vector2(vector.x * speed * walkCount, vector.y * speed * walkCount);
+        Vector2 start = new Vector2(transform.position.x + vector.x * speed * walkCount,
+                                    transform.position.y + vector.y * speed * walkCount);
+        Vector2 end = start + new Vector2(vector.x * speed, vector.y * speed);
 
         boxCollider.enabled = false;
         hit = Physics2D.Linecast(start, end, layerMask);
